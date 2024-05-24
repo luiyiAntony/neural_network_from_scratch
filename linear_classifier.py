@@ -277,8 +277,10 @@ class LinearLayer:
 class Conv:
     def __init__(self, in_channels, kernel_size: int, out_channels: int, stride = 1):
         """
-        filter_size   : dim of filter
-        n_filters : number of filters
+        in_channels : depth input images
+        kernel_size : kernel size (only one because the kernel is square so width and height are equal)
+        out_channels : number of kernes (it will be the depth for the output 3d matrix of this convolutional layer)
+        stride : size of the steps that the kernel will take
         """
         self.kernel_size = kernel_size
         self.in_channels = in_channels
