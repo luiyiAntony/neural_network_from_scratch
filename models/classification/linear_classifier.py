@@ -3,31 +3,14 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from random import uniform, lognormvariate
 
-import torch
+from models.layers.dense import LinearLayer
+
+#import torch
+
 
 np.random.seed(42)
 
-class Dropout:
-    def __init__(self) -> None:
-        pass
-
-    # x : input (batch)
-    # p : percent of dropout
-    def forward(self, x, p=0.5, test=False):
-        if test:
-            x *= p # (n, m)
-            return x
-        else:
-            self.U = np.random.rand(*x.shape) < p # (n, m)
-            x *= self.U # (n, m)
-            return x
-
-    def backward(self, prev): # x.shape == prev.shape
-        self.dx = self.U * prev # (n, m)
-        return self.dx
-
-
-class Model: # arquitectura de la NN
+class NeuralNetwork: # arquitectura de la NN
     def __init__(self, input_size, n_hidden, out_size) -> None:
         # CREATE LAYERS
         self.linearLayer1 = LinearLayer(input_size, n_hidden, xavier_init=False, 

@@ -1,3 +1,6 @@
+import numpy as np
+from models.layers.layer import Layer
+
 # models/layers/convolutional.py
 """
 # torch example
@@ -13,7 +16,50 @@ class ConvLayer(nn.Module):
         return self.conv(x)
 """
 
-class ConvLayer:
+class ConvLayer(Module):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
+        super().__init__()
+        self.params['W'] = np.random.randn(out_channels, in_channels, kernel_size, kernel_size) * 0.01
+        self.params['b'] = np.zeros(out_channels)
+        self.grads['W'] = np.zeros_like(self.params['W'])
+        self.grads['b'] = np.zeros_like(self.params['b'])
+        self.stride = stride
+        self.padding = padding
+
+    def forward(self, input):
+        # Implementacion simple 2d
+        self.input = input
+        # input size (batch_size, in_channels, height, width)
+        batch_size, in_channels, height, width = input.shape
+        out_channels, _, kernel_height, kernel_width = self.params['W'].shape
+        output_height = (height - kernel_height) // self.stride + 1
+        output_width = (width - kernel_width) // self.stride + 1
+        output = np.zeros((batch_size, out_channels, output_height, output_width))
+
+        for i in range(output_height):
+            for j in range(output_width):
+                input_slice = input[:, :, i*self.stride:i*self.stride+kernel_height, j*self.stride:j*self.stride+kernel_width]
+                for k in range(out_channels):
+                    output[:, k, i, j] = np.sum(input_slice * self.params['W'][k, :, :, :], axis=(1, 2, 3))
+                output[:, :, i, j] += self.params['b']
+        return output
+
+    def backward(self, grad_output):
+        batch_size, in_channels, height, width = self.input.shape
+        out_channels, _, kernel_height, kernel_width = self.params['W'].shape
+        grad_input = np.zeros_like(self.input)
+
+        for i in range(grad_output.shape[2]):
+            for j in range(grad_output.shape[3]):
+                input_slice = self.input[:, :, i*self.stride:i*self.stride+kernel_height, j*self.stride:j*self.stride+kernel_width]
+                for k in range(out_channels):
+                    self.grads['W'][k, :, :, :] += np.sum(input_slice * grad_output[:, k, i, j][:, None, None, None], axis=0)
+                    grad_input[:, :, i*self.stride:i*self.stride+kernel_height, j*self.stride:j*self.stride+kernel_width] += self.params['W'][k, :, :, :] * grad_output[:, k, i, j][:, None, None, None]
+                self.grads['b'] += np.sum(grad_output[:, :, i, j], axis=0)
+        return grad_input
+        
+
+class ConvLayer2:
     def __init__(self, in_channels, kernel_size: int, out_channels: int, stride = 1):
         """
         in_channels : depth input images

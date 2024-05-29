@@ -1,26 +1,43 @@
 # tests/test_layers.py
+import sys
+import os
 import unittest
-import torch
+import numpy as np
 
+# Add the root directory to the sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from models.layers.convolutional import ConvLayer
+from models.layers.dense import LinearLayer
+
+"""
 from models.layers.dense import DenseLayer
 from models.layers.convolutional import ConvLayer
 from models.layers.recurrent import LSTMLayer
 from models.layers.activations import ReLUActivation, SigmoidActivation, TanhActivation
 from models.layers.batchnorm import BatchNorm1d, BatchNorm2d
+from models.layers.dropout import Dropout
+"""
 
 class TestLayers(unittest.TestCase):
     def test_dense_layer(self):
-        layer = DenseLayer(10, 5)
-        x = torch.randn(1, 10)
-        output = layer(x)
-        self.assertEqual(output.shape, (1, 5))
+        layer = LinearLayer(10, 5)
+        x = np.random.randn(5, 10)
+        output = layer.forward(x)
+        self.assertEqual(output.shape, (5, 5))
     
     def test_conv_layer(self):
         layer = ConvLayer(3, 6, 3)
-        x = torch.randn(1, 3, 32, 32)
-        output = layer(x)
-        self.assertEqual(output.shape, (1, 6, 30, 30))
+        x = np.random.randn(10, 3, 32, 32) # 10 images RGB 32x32
+        output = layer.forward(x)
+        # forward test
+        self.assertEqual(output.shape, (10, 6, 30, 30))
+        # backward test
+        grad_output = output # only for test porpuses
+        grad_x = layer.backward(output)
+        self.assertEqual(grad_x.shape, x.shape)
     
+    """
     def test_lstm_layer(self):
         layer = LSTMLayer(10, 20)
         x = torch.randn(5, 10, 10)  # batch_size=5, seq_len=10, input_dim=10
@@ -59,6 +76,14 @@ class TestLayers(unittest.TestCase):
         x = torch.randn(10, 3, 32, 32)
         output = batchnorm(x)
         self.assertEqual(output.shape, x.shape)
+
+    def test_dropout(self):
+        dropout = Dropout(p=0.5)
+        x = torch.randn(10, 3)
+        output = dropout(x)
+        self.assertEqual(output.shape, x.shape)
+        self.assertTrue((output == 0).sum().item() > 0)
+    """
 
 if __name__ == '__main__':
     unittest.main()

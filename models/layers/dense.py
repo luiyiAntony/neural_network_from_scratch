@@ -1,6 +1,7 @@
 import numpy as np
 
 from models.optimizers.custom_optimizer import Optimizer
+from models.layers.layer import Module
 
 # models/layers/dense.py
 """
@@ -17,7 +18,24 @@ class DenseLayer(nn.Module):
         return self.linear(x)
 """
 
-class LinearLayer:
+class LinearLayer(Module):
+    def __init__(self, input_dim, output_dim):
+        super().__init__()
+        self.params['W'] = np.random.randn(input_dim, output_dim) * 0.01
+        self.params['b'] = np.zeros(output_dim)
+        self.grads['W'] = np.zeros_like(self.params['W'])
+        self.grads['b'] = np.zeros_like(self.params['b'])
+
+    def forward(self, input):
+        self.input = input
+        return np.dot(input, self.params['W']) + self.params['b']
+
+    def backward(self, grad_output):
+        self.grads['W'] = np.dot(self.input.T, grad_output)
+        self.grads['b'] = np.sum(grad_output, axis=0)
+        return np.dot(grad_output, self.params['W'].T)
+
+class LinearLayer2():
     """
     input_size : number of parameters of each neuron
     output_size : number of neurons
@@ -91,14 +109,4 @@ class LinearLayer:
         if self.ensembles:
             self.w_test = 0.995*self.w_test + 0.005*self.w
             self.b_test = 0.995*self.b_test + 0.005*self.b
-
-class LinearTest:
-    def __init__(self, input, output):
-        self.w = np.random.randn(input, output)
-
-    def forward(self, x):
-        """
-        x : (anything, input)
-        """
-        return x @ self.w # (anything, output)
 
