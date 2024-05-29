@@ -14,7 +14,7 @@ class CIFAR10:
         fine_labels_train = data_train[b'fine_labels']
         coarse_labels_train = data_train[b'coarse_labels']
         train = data_train[b'data']
-        return train, fine_labels_train
+        return train, coarse_labels_train
 
     def load_test(self):
         # test
@@ -22,14 +22,14 @@ class CIFAR10:
         fine_labels_test = data_test[b'fine_labels']
         coarse_labels_test = data_test[b'coarse_labels']
         test = data_test[b'data']
-        return test, fine_labels_test
+        return test, coarse_labels_test
 
     def load_labels(self):
         # label's name
         meta = self.load_chunk('meta')
         fine_label_names = meta[b'fine_label_names']
         coarse_label_names = meta[b'coarse_label_names']
-        return fine_label_names
+        return coarse_label_names
 
     def load_chunk(self, file_name):
         import pickle

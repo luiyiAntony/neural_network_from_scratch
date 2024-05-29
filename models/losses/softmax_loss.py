@@ -1,3 +1,5 @@
+import numpy as np
+
 class SoftmaxLoss:
     def __init__(self) -> None:
         pass
@@ -11,6 +13,7 @@ class SoftmaxLoss:
         if accuracy:
             return self.softmax
         self._loss = -np.log(self.softmax) # (n, m)
+        #print(f"_loss : {self._loss}")
         self.loss = np.sum(self._loss[range(len(labels)), self.labels])/len(labels) # int
         return self.loss # int
 

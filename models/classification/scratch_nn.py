@@ -1,8 +1,14 @@
+import sys
+import os
+import pandas as pd
+
+# Add the root directory to the sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
 from models.layers.layer import Module
 from models.layers.dense import LinearLayer
 from models.layers.activations import ReLU
 from models.losses.softmax_loss import SoftmaxLoss
-from models.optimizers.custom_optimizer import Optimizer
 from models.optimizers.sgd import SGDOptimizer
 from utils.data_processing import CIFAR10, DataLoader
 
@@ -27,7 +33,7 @@ train_dataloader = DataLoader(train_dataframe,
                               batch_size=batch_size)
 test_dataloader = DataLoader(test_dataframe,
                              batch_size=batch_size)
-for X, y in dataloader:
+for X, y in test_dataloader:
     print(f"Shape of X [N, H * W]: {X.shape}")
     print(f"Shape of y: {y.shape} {y.dtype}")
     break
@@ -42,7 +48,7 @@ class ScratchNeuralNetwork(Module):
             ReLU(),
             LinearLayer(512, 512),
             ReLU(),
-            LinearLayer(512, 10)
+            LinearLayer(512, 20)
         ]
 
     def forward(self, input):
@@ -56,7 +62,6 @@ class ScratchNeuralNetwork(Module):
         return grad_output
 
 model = ScratchNeuralNetwork()
-print(model)
 
 ################################
 # Define the loss function
@@ -71,18 +76,18 @@ optimizer = SGDOptimizer(model, lr=1e-3)
 ################################
 # Define the train function
 ################################
-def train(dataLoader, model, loss_fn, optimizer):
-    size = len(dataLoader.data)
+def train(dataloader, model, loss_fn, optimizer):
+    size = len(dataloader.data)
     for batch, (X, y) in enumerate(dataloader):
         # Compute prediction error
-        pred = model(X)
+        pred = model.forward(X)
         loss = loss_fn.forward(pred, y)
 
         # Backpropagation
         logits_grad = loss_fn.backward()
         model.backward(logits_grad)
         optimizer.step()
-        otimizer.zero_grad()
+        optimizer.zero_grad()
 
         if batch % 100 == 0:
             loss, current = loss, (batch + 1) * len(X)

@@ -18,7 +18,7 @@ class TestDataset(unittest.TestCase):
         )
         self.assertEqual(dataset.X.shape, (50000, 3072), msg="INCORRECT SHAPE (X.shape)")
         self.assertEqual(len(dataset.y), 50000, msg="INCORRECT NUMBER OF LABELS (len(y))")
-        self.assertEqual(len(dataset.label_names), 100, msg="INCORRECT NUMBER OF NAME LABELS")
+        self.assertEqual(len(dataset.label_names), 20, msg="INCORRECT NUMBER OF NAME LABELS")
 
     def test_test_split_dataset(self):
         dataset = CIFAR10(
@@ -27,7 +27,7 @@ class TestDataset(unittest.TestCase):
         )
         self.assertEqual(dataset.X.shape, (10000, 3072), msg="INCORRECT SHAPE (X.shape)")
         self.assertEqual(len(dataset.y), 10000, msg="INCORRECT NUMBER OF LABELS (len(y))")
-        self.assertEqual(len(dataset.label_names), 100, msg="INCORRECT NUMBER OF NAME LABELS")
+        self.assertEqual(len(dataset.label_names), 20, msg="INCORRECT NUMBER OF NAME LABELS")
 
     def test_dataloader(self):
         dataset = CIFAR10(train=True)

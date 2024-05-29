@@ -571,8 +571,8 @@ if __name__ == '__main__':
     train /= np.std(train, axis=0)
     test  /= np.std(test , axis=0)
     # extract the dimensions
-    input_size = len(train[0])
-    out_size = len(coarse_label_names)
+    input_size = len(train[0]) # 50 000 
+    out_size = len(coarse_label_names) # 
 
     # HYPER-PARAMS
     #learning_rate = 10**lognormvariate(-3,-6)

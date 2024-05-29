@@ -1,3 +1,5 @@
+import numpy as np
+
 # models/layers/activations.py
 """
 # torch example

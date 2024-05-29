@@ -27,4 +27,5 @@ class SGDOptimizer:
 
     def zero_grad(self):
         for layer in self.model.layers:
-            layer.zero_grad()
+            if 'params' in layer.__dir__():
+                layer.zero_grad()
