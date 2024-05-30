@@ -3,3 +3,4 @@ data/
 cs231_lessons
 notes/
 **/__pycache__/*
+pretrained/
