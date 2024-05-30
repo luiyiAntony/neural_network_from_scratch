@@ -1,6 +1,7 @@
 import sys
 import os
 import pandas as pd
+import numpy as np
 
 # Add the root directory to the sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
@@ -102,9 +103,9 @@ def test(dataloader, model, loss_fn):
     test_loss, correct = 0, 0
     
     for X, y in dataloader:
-        pred = model(X)
-        test_loss += loss_fn(pred, y)
-        correct += (pred.argmax(1) == y).type(torch.float).sum().item()
+        pred = model.forward(X)
+        test_loss += loss_fn.forward(pred, y)
+        correct += (pred.argmax(1) == y).astype(np.float64).sum().item()
     test_loss /= num_batches
     correct /= size
     print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
@@ -119,7 +120,47 @@ for t in range(epochs):
     test(test_dataloader, model, loss_fn)
 print("Done!")
 
+################################
+# Saving Models
+################################
+model.save_model("pretrained/simple_network.pkl")
+print("Saved PyTorch Model State to model.pth")
 
+################################
+# loading models
+################################
+model.load_model("pretrained/simple_network.pkl")
+
+################################
+# Prediction
+################################
+classes = [
+    'aquatic_mammals', 
+    'fish', 
+    'flowers', 
+    'food_containers', 
+    'fruit_and_vegetables', 
+    'household_electrical_devices', 
+    'household_furniture', 
+    'insects', 
+    'large_carnivores', 
+    'large_man-made_outdoor_things', 
+    'large_natural_outdoor_scenes', 
+    'large_omnivores_and_herbivores', 
+    'medium_mammals', 
+    'non-insect_invertebrates', 
+    'people', 
+    'reptiles', 
+    'small_mammals', 
+    'trees', 
+    'vehicles_1', 
+    'vehicles_2'
+]
+
+x, y = test_data.X[0], test_data.y[0]
+pred = model.forward(x)
+predicted, actual = classes[pred[0].argmax(0)], classes[y]
+print(f'Predicted: "{predicted}", Actual: "{actual}"')
 
 
 

@@ -1,5 +1,11 @@
+import sys
+import os
 import numpy as np
-from models.layers.layer import Layer
+
+# Add the root directory to the sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
+from models.layers.layer import Module
 
 # models/layers/convolutional.py
 """

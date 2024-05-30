@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 class Module:
     def __init__(self):
@@ -31,3 +32,11 @@ class Module:
         """
         for key in self.params:
             self.grads[key] = np.zeros_like(self.grads[key])
+
+    def save_model(self, file_path):
+        with open(file_path, 'wb') as f:
+            pickle.dump(self, f)
+
+    def load_model(self, file_path):
+        with open(file_path, 'rb') as f:
+            self = pickle.load(f)

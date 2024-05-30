@@ -33,6 +33,7 @@ class CIFAR10:
 
     def load_chunk(self, file_name):
         import pickle
+        #data_dir = 'drive/MyDrive/Deep_Learning/data/'
         data_dir = 'data/'
         with open(data_dir + file_name, 'rb') as fo:
             dict = pickle.load(fo, encoding='bytes')
