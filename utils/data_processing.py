@@ -1,5 +1,55 @@
 import numpy as np
 import pandas as pd
+import gzip
+
+class FashionMNIST:
+    def __init__(self, root="", train=True):
+        if train:
+            self.X, self.y = self.load_train()
+        else:
+            self.X, self.y = self.load_test()
+        self.X = self.X.reshape(self.X.shape[0], -1)
+        #self.label_names = self.load_labels()
+
+    def load_train(self):
+        # DATA
+        dir = 'data/mnist/'
+        #dir = 'data/FashionMNIST/raw/'
+        fdata = gzip.open(dir + 'train-images-idx3-ubyte.gz', 'r')
+        # TARGETS
+        ftargets = gzip.open(dir + 'train-labels-idx1-ubyte.gz', 'r')
+
+        image_size = 28
+        num_images = 60000
+
+        fdata.read(16)
+        ftargets.read(8)
+        bufdata = fdata.read(image_size * image_size * num_images)
+        buftargets = ftargets.read(num_images)
+        data = np.frombuffer(bufdata, dtype=np.uint8).astype(np.float32)
+        data = data.reshape(num_images, image_size, image_size, 1)
+        targets = np.frombuffer(buftargets, dtype=np.uint8).astype(np.int64)
+        return data, targets
+
+    def load_test(self):
+        # DATA
+        dir = 'data/mnist/'
+        #dir = 'data/FashionMNIST/raw/'
+        fdata = gzip.open(dir + 't10k-images-idx3-ubyte.gz', 'r')
+        # TARGETS
+        ftargets = gzip.open(dir + 't10k-labels-idx1-ubyte.gz', 'r')
+
+        image_size = 28
+        num_images = 10000
+
+        fdata.read(16)
+        ftargets.read(8)
+        bufdata = fdata.read(image_size * image_size * num_images)
+        buftargets = ftargets.read(num_images)
+        data = np.frombuffer(bufdata, dtype=np.uint8).astype(np.float32)
+        data = data.reshape(num_images, image_size, image_size, 1)
+        targets = np.frombuffer(buftargets, dtype=np.uint8).astype(np.int64)
+        return data, targets
 
 class CIFAR10:
     def __init__(self, root="", train=True):
@@ -83,7 +133,7 @@ class DataLoader:
         for start_idx in range(0, len(self.data), self.batch_size):
             end_idx = min(start_idx + self.batch_size, len(self.data))
             batch_indices = self.indices[start_idx:end_idx]
-            yield self.data.iloc[batch_indices,0:-1], self.data.iloc[batch_indices, 3072]
+            yield self.data.iloc[batch_indices,0:-1], self.data.iloc[batch_indices, self.data.shape[1] - 1]
     
     def __getitem__(self, index):
         """

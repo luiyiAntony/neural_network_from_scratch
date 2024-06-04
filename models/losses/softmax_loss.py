@@ -6,7 +6,7 @@ class SoftmaxLoss:
 
     def forward(self, results, labels, accuracy=False):
         self.labels = np.array(labels) # needed for the backprop
-        self.results = results
+        self.results = results - np.max(results, axis=1, keepdims=True)
         self.exps = np.exp(self.results) # (n, m)
         self.sum_exps = np.sum(self.exps, axis=1, keepdims=True) # (n,1)
         self.softmax = self.exps / self.sum_exps  # (n, m)

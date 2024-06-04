@@ -11,16 +11,16 @@ from models.layers.dense import LinearLayer
 from models.layers.activations import ReLU
 from models.losses.softmax_loss import SoftmaxLoss
 from models.optimizers.sgd import SGDOptimizer
-from utils.data_processing import CIFAR10, DataLoader
+from utils.data_processing import CIFAR10, FashionMNIST, DataLoader
 
 ################################
 # Create data loaders.
 ################################
 # training data 
-train_data = CIFAR10(train=True)
+train_data = FashionMNIST(train=True)
 
 # test data 
-test_data = CIFAR10(train=False)
+test_data = FashionMNIST(train=False)
 
 ################################
 # Create data loaders.
@@ -45,11 +45,11 @@ for X, y in test_dataloader:
 class ScratchNeuralNetwork(Module):
     def __init__(self):
         self.layers = [
-            LinearLayer(32*32*3, 512),
+            LinearLayer(28*28, 512),
             ReLU(),
             LinearLayer(512, 512),
             ReLU(),
-            LinearLayer(512, 20)
+            LinearLayer(512, 10)
         ]
 
     def forward(self, input):

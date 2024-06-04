@@ -8,7 +8,7 @@ import pandas as pd
 # Add the root directory to the sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from utils.data_processing import CIFAR10, DataLoader
+from utils.data_processing import CIFAR10, FashionMNIST, DataLoader
 
 class TestDataset(unittest.TestCase):
     def test_train_split_dataset(self):
@@ -29,8 +29,25 @@ class TestDataset(unittest.TestCase):
         self.assertEqual(len(dataset.y), 10000, msg="INCORRECT NUMBER OF LABELS (len(y))")
         self.assertEqual(len(dataset.label_names), 20, msg="INCORRECT NUMBER OF NAME LABELS")
 
+    def test_mnist_dataset(self):
+        # TRAIN
+        dataset = FashionMNIST(
+            root = "", 
+            train = True
+        )
+        self.assertEqual(dataset.X.shape, (60000, 784), msg="INCORRECT SHAPE (X.shape)")
+        self.assertEqual(len(dataset.y), 60000, msg="INCORRECT NUMBER OF LABELS (len(y))")
+       
+        # TEST
+        dataset = FashionMNIST(
+            root = "", 
+            train = False
+        )
+        self.assertEqual(dataset.X.shape, (10000, 784), msg="INCORRECT SHAPE (X.shape)")
+        self.assertEqual(len(dataset.y), 10000, msg="INCORRECT NUMBER OF LABELS (len(y))")
+
     def test_dataloader(self):
-        dataset = CIFAR10(train=True)
+        dataset = FashionMNIST(root="", train=True)
         data = pd.DataFrame(dataset.X)
         data["label"] = dataset.y
         batchsize = 16
