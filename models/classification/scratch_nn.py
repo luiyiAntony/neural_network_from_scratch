@@ -11,10 +11,11 @@ from models.layers.dense import LinearLayer
 from models.layers.activations import ReLU
 from models.losses.softmax_loss import SoftmaxLoss
 from models.optimizers.sgd import SGDOptimizer
+from models.optimizers.adam import AdamOptimizer
 from utils.data_processing import CIFAR10, FashionMNIST, DataLoader
 
 ################################
-# Create data loaders.
+# Get data sets
 ################################
 # training data 
 train_data = FashionMNIST(train=True)
@@ -72,7 +73,8 @@ loss_fn = SoftmaxLoss()
 ################################
 # Define the optimizer
 ################################
-optimizer = SGDOptimizer(model, lr=1e-3)
+#optimizer = SGDOptimizer(model, lerning_rate=1e-3)
+optimizer = AdamOptimizer(model, learning_rate=1e-3)
 
 ################################
 # Define the train function
