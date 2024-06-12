@@ -1,6 +1,17 @@
-def show_img(dataset, index):
-    x = dataset[index]
-    # x : (3073) -> (32 x 32 x 3)
+
+import sys
+import numpy as np
+from PIL import Image
+
+from data_processing import CIFAR10
+
+def show_img(data, index):
+    X = data.X
+    y = data.y
+    labels = data.label_names
+    x = X[index]
+    target = y[index]
+    # x : (3073) (need to convert to) -> (32 x 32 x 3)
     # first chunk  : 1024 red channel values
     # second chunk : 1024 green channel values
     # third chunk  : 1024 blue channel values
@@ -12,6 +23,14 @@ def show_img(dataset, index):
     rs_img = np.reshape(rs_img, ( 32, 32, 3))
     img = Image.fromarray(rs_img, 'RGB')
     img.show()
-    print(coarse_labels_train[index])
-    print(np.array(coarse_label_names)[coarse_labels_train[index]])
+    print(labels[target])
+    #print(np.array(labels)[labels[index]])
 
+
+if __name__ == '__main__':
+    args = sys.argv
+    index_image = 0
+    if '--index' in args:
+        index_image = int(args[args.index('--index') + 1])
+    data = CIFAR10(train=True)
+    show_img(data, index_image)

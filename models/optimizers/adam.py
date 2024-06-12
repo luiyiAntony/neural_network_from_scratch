@@ -16,7 +16,7 @@ class AdamOptimizer:
 """
 
 class AdamOptimizer:
-    def __init__(self, model, learning_rate=0.01, beta1=0.9, beta2=0.999, epsilon=1e-8):
+    def __init__(self, model, learning_rate=1e-6, beta1=0.9, beta2=0.999, epsilon=1e-8):
         self.model = model
         self.learning_rate = learning_rate
         self.beta1 = beta1

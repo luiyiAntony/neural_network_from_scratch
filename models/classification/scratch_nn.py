@@ -12,16 +12,17 @@ from models.layers.activations import ReLU
 from models.losses.softmax_loss import SoftmaxLoss
 from models.optimizers.sgd import SGDOptimizer
 from models.optimizers.adam import AdamOptimizer
+from models.optimizers.adagrad import AdagradOptimizer
 from utils.data_processing import CIFAR10, FashionMNIST, DataLoader
 
 ################################
 # Get data sets
 ################################
 # training data 
-train_data = FashionMNIST(train=True)
+train_data = CIFAR10(train=True)
 
 # test data 
-test_data = FashionMNIST(train=False)
+test_data = CIFAR10(train=False)
 
 ################################
 # Create data loaders.
@@ -46,11 +47,11 @@ for X, y in test_dataloader:
 class ScratchNeuralNetwork(Module):
     def __init__(self):
         self.layers = [
-            LinearLayer(28*28, 512),
+            LinearLayer(32*32*3, 512),
             ReLU(),
             LinearLayer(512, 512),
             ReLU(),
-            LinearLayer(512, 10)
+            LinearLayer(512, 20)
         ]
 
     def forward(self, input):
@@ -74,7 +75,7 @@ loss_fn = SoftmaxLoss()
 # Define the optimizer
 ################################
 #optimizer = SGDOptimizer(model, lerning_rate=1e-3)
-optimizer = AdamOptimizer(model, learning_rate=1e-3)
+optimizer = AdagradOptimizer(model, learning_rate=1e-8)
 
 ################################
 # Define the train function

@@ -14,7 +14,7 @@ class FashionMNIST:
     def load_train(self):
         # DATA
         dir = 'data/mnist/'
-        #dir = 'data/FashionMNIST/raw/'
+        #dir = 'drive/MyDrive/Deep_Learning/data/mnist/'
         fdata = gzip.open(dir + 'train-images-idx3-ubyte.gz', 'r')
         # TARGETS
         ftargets = gzip.open(dir + 'train-labels-idx1-ubyte.gz', 'r')
@@ -34,7 +34,7 @@ class FashionMNIST:
     def load_test(self):
         # DATA
         dir = 'data/mnist/'
-        #dir = 'data/FashionMNIST/raw/'
+        #dir = 'drive/MyDrive/Deep_Learning/data/mnist/'
         fdata = gzip.open(dir + 't10k-images-idx3-ubyte.gz', 'r')
         # TARGETS
         ftargets = gzip.open(dir + 't10k-labels-idx1-ubyte.gz', 'r')
