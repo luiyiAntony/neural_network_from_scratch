@@ -1,10 +1,4 @@
-import sys
-import os
 import numpy as np
-
-# Add the root directory to the sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
 from models.layers.layer import Module
 
 # models/layers/convolutional.py
@@ -23,6 +17,14 @@ class ConvLayer(nn.Module):
 """
 
 class ConvLayer(Module):
+    """
+    PARAMS:
+        - in_channels: number of channels of the input (weight, height, channels).
+        - out_channels: number of kernels.
+        - kernel+size: 3: (3x3), 5: (5x5).
+        - stride: size of the stride.
+        - padding: size of the padding.
+    """
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
         super().__init__()
         self.params['W'] = np.random.randn(out_channels, in_channels, kernel_size, kernel_size) * 0.01
@@ -134,3 +136,6 @@ class ConvLayer2:
                         #print(temp_d_x)
         self.d_x = np.sum(temp_d_x, axis=0)
         return self.d_x
+
+if '__main__' == __name__:
+    print("convolution module")

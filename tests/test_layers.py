@@ -4,11 +4,9 @@ import os
 import unittest
 import numpy as np
 
-# Add the root directory to the sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from models.layers.convolutional import ConvLayer
 from models.layers.dense import LinearLayer
+from models.layers.flatten import Flatten
 
 """
 from models.layers.dense import DenseLayer
@@ -36,6 +34,25 @@ class TestLayers(unittest.TestCase):
         grad_output = output # only for test porpuses
         grad_x = layer.backward(output)
         self.assertEqual(grad_x.shape, x.shape)
+
+    def test_flatten(self):
+        flatten = Flatten()
+        input_test = np.array([
+            [[1,2],
+             [3,4]],
+            [[5,6],
+             [7,8]]
+            ]) # (2, 2, 2)
+        expected_output = np.array([
+            [1,2,3,4],
+            [5,6,7,8]
+        ])
+        # forward test
+        output_test = flatten.forward(input_test)
+        self.assertEqual(output_test.shape, expected_output.shape)
+        # backward test
+        grad_test = flatten.backward(expected_output)
+        self.assertEqual(grad_test.shape, input_test.shape)
     
     """
     def test_lstm_layer(self):

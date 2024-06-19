@@ -3,11 +3,10 @@ import os
 import pandas as pd
 import numpy as np
 
-# Add the root directory to the sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
 from models.layers.layer import Module
 from models.layers.dense import LinearLayer
+from models.layers.flatten import Flatten
+from models.layers.convolutional import ConvLayer
 from models.layers.activations import ReLU
 from models.losses.softmax_loss import SoftmaxLoss
 from models.optimizers.sgd import SGDOptimizer
@@ -27,14 +26,14 @@ test_data = CIFAR10(train=False)
 ################################
 # Create data loaders.
 ################################
-train_dataframe = pd.DataFrame(train_data.X)
-train_dataframe['label'] = train_data.y
-test_dataframe = pd.DataFrame(test_data.X)
-test_dataframe['label'] = test_data.y
+# train_dataframe = pd.DataFrame(train_data.X)
+# train_dataframe['label'] = train_data.y
+# test_dataframe = pd.DataFrame(test_data.X)
+# test_dataframe['label'] = test_data.y
 batch_size = 64
-train_dataloader = DataLoader(train_dataframe,
+train_dataloader = DataLoader(train_data,
                               batch_size=batch_size)
-test_dataloader = DataLoader(test_dataframe,
+test_dataloader = DataLoader(test_data,
                              batch_size=batch_size)
 for X, y in test_dataloader:
     print(f"Shape of X [N, H * W]: {X.shape}")
@@ -47,7 +46,10 @@ for X, y in test_dataloader:
 class ScratchNeuralNetwork(Module):
     def __init__(self):
         self.layers = [
-            LinearLayer(32*32*3, 512),
+            ConvLayer(in_channels=3, out_channels=5, kernel_size=3),
+            ConvLayer(in_channels=5, out_channels=10, kernel_size=3),
+            Flatten(),
+            LinearLayer(28*28*10, 512),
             ReLU(),
             LinearLayer(512, 512),
             ReLU(),
@@ -81,7 +83,7 @@ optimizer = AdagradOptimizer(model, learning_rate=1e-8)
 # Define the train function
 ################################
 def train(dataloader, model, loss_fn, optimizer):
-    size = len(dataloader.data)
+    size = len(dataloader.data.X)
     for batch, (X, y) in enumerate(dataloader):
         # Compute prediction error
         pred = model.forward(X)
@@ -101,7 +103,7 @@ def train(dataloader, model, loss_fn, optimizer):
 # Define the test function
 ################################
 def test(dataloader, model, loss_fn):
-    size = len(dataloader.data)
+    size = len(dataloader.data.X)
     num_batches = len(dataloader)
     test_loss, correct = 0, 0
     
