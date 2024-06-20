@@ -15,7 +15,7 @@ class FashionMNIST:
     def load_train(self):
         # DATA
         dir = 'data/mnist/'
-        #dir = 'drive/MyDrive/Deep_Learning/data/mnist/'
+        #dir = '/content/drive/MyDrive/Deep_Learning/data/mnist/'
         fdata = gzip.open(dir + 'train-images-idx3-ubyte.gz', 'r')
         # TARGETS
         ftargets = gzip.open(dir + 'train-labels-idx1-ubyte.gz', 'r')
@@ -35,7 +35,7 @@ class FashionMNIST:
     def load_test(self):
         # DATA
         dir = 'data/mnist/'
-        #dir = 'drive/MyDrive/Deep_Learning/data/mnist/'
+        #dir = '/content/drive/MyDrive/Deep_Learning/data/mnist/'
         fdata = gzip.open(dir + 't10k-images-idx3-ubyte.gz', 'r')
         # TARGETS
         ftargets = gzip.open(dir + 't10k-labels-idx1-ubyte.gz', 'r')
@@ -149,7 +149,7 @@ class CIFAR10:
 
     def load_chunk(self, file_name):
         import pickle
-        #data_dir = 'drive/MyDrive/Deep_Learning/data/'
+        #data_dir = '/content/drive/MyDrive/Deep_Learning/data/'
         data_dir = 'data/'
         with open(data_dir + file_name, 'rb') as fo:
             dict = pickle.load(fo, encoding='bytes')

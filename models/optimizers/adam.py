@@ -39,6 +39,7 @@ class AdamOptimizer:
         self.t = 0
 
     def step(self):
+        print("OPTIMIZER STEP (ADAM)...\n")
         self.t += 1
         lr_t = self.learning_rate * (np.sqrt(1 - self.beta2 ** self.t) / (1 - self.beta1 ** self.t))  
 

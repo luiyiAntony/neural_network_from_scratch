@@ -2,11 +2,13 @@ import sys
 import os
 import pandas as pd
 import numpy as np
+import cupy as cp
 
 from models.layers.layer import Module
 from models.layers.dense import LinearLayer
 from models.layers.flatten import Flatten
 from models.layers.convolutional import ConvLayer
+from models.layers.parallel_conv import ConvLayer as ParallelCon
 from models.layers.activations import ReLU
 from models.losses.softmax_loss import SoftmaxLoss
 from models.optimizers.sgd import SGDOptimizer
@@ -36,7 +38,7 @@ train_dataloader = DataLoader(train_data,
 test_dataloader = DataLoader(test_data,
                              batch_size=batch_size)
 for X, y in test_dataloader:
-    print(f"Shape of X [N, H * W]: {X.shape}")
+    print(f"Shape of X [N, C, H, W]: {X.shape}")
     print(f"Shape of y: {y.shape} {y.dtype}")
     break
 
@@ -46,8 +48,10 @@ for X, y in test_dataloader:
 class ScratchNeuralNetwork(Module):
     def __init__(self):
         self.layers = [
-            ConvLayer(in_channels=3, out_channels=5, kernel_size=3),
-            ConvLayer(in_channels=5, out_channels=10, kernel_size=3),
+            # ConvLayer(in_channels=3, out_channels=5, kernel_size=3),
+            # ConvLayer(in_channels=5, out_channels=10, kernel_size=3),
+            ParallelCon(num_filters=5, filter_size=3, input_shape=(3, 32, 32), stride=1, padding=0),
+            ParallelCon(num_filters=10, filter_size=3, input_shape=(5, 30, 30), stride=1, padding=0),
             Flatten(),
             LinearLayer(28*28*10, 512),
             ReLU(),

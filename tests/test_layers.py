@@ -3,10 +3,12 @@ import sys
 import os
 import unittest
 import numpy as np
+import cupy as cp
 
 from models.layers.convolutional import ConvLayer
 from models.layers.dense import LinearLayer
 from models.layers.flatten import Flatten
+from models.layers.parallel_conv import ConvLayer as ParallelConv
 
 """
 from models.layers.dense import DenseLayer
@@ -27,6 +29,18 @@ class TestLayers(unittest.TestCase):
     def test_conv_layer(self):
         layer = ConvLayer(3, 6, 3)
         x = np.random.randn(10, 3, 32, 32) # 10 images RGB 32x32
+        output = layer.forward(x)
+        # forward test
+        self.assertEqual(output.shape, (10, 6, 30, 30))
+        # backward test
+        grad_output = output # only for test porpuses
+        grad_x = layer.backward(output)
+        self.assertEqual(grad_x.shape, x.shape)
+
+    def test_parallel_conv_layer(self):
+        layer = ConvLayer(in_channels=3, out_channels=6, kernel_size=3)
+        layer = ParallelConv(num_filters=6, filter_size=3, input_shape=(3, 32, 32), stride=1, padding=0)
+        x = cp.random.randn(10, 3, 32, 32) # 10 images RGB 32x32
         output = layer.forward(x)
         # forward test
         self.assertEqual(output.shape, (10, 6, 30, 30))
